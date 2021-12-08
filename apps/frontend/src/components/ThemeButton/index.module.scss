@@ -1,0 +1,46 @@
+.button {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  border-radius: 100vw;
+  height: 48px;
+  width: 48px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.theme-dark,
+.dark {
+  background-color: black;
+  fill: white;
+  .div {
+    transform: rotate(180deg);
+  }
+}
+
+.theme-light,
+.white {
+  background-color: white;
+  fill: black;
+}
+
+.icon {
+  border-radius: 100vw;
+  height: 48px;
+  width: 48px;
+  padding: 6px;
+}
+
+.div {
+  width: 48px;
+  height: 96px;
+  transform-origin: 24px 48px;
+  display: flex;
+  flex-wrap: wrap;
+  transition: transform 300ms ease;
+}
+
+.theme-dark.icon {
+  transform: rotate(180deg);
+}

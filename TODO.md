@@ -1,0 +1,28 @@
+- [ ] SEO
+- [x] Healthcheck
+- [x] Loading indicator
+- [x] Limit title length to 2 lines
+- [ ] Explain why user interface change
+- [ ] Explain why Framework change
+- [x] Explain start instructions
+- [~] Documentation
+- [x] Explain where dataset (MongoDB MFlix sample dataset)
+- [x] Logging
+- [~] Admin API
+- [ ] Admin Frontend
+- [ ] JSDoc enforce
+- [ ] Better Error Handling
+- [ ] Make common modules dynamic
+- [x] Handle unparsable JSON
+- [x] Check TLD on create
+
+# Low Priority
+- [ ] Internationalization
+- [~] Testing
+- [x] Security
+- [x] OpenAPI spec
+- [x] ESLint
+- [x] TSConfig
+- [ ] Pagination? (meh, not needed)
+- [ ] Monitoring
+- [ ] Dev Containers

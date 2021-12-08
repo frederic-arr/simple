@@ -1,0 +1,19 @@
+@import '../../styles/mixins';
+
+.button {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  border-radius: 100vw;
+  height: 48px;
+  width: 48px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: transparent;
+
+  @include mobile() {
+    top: unset;
+    bottom: 2rem;
+  }
+}

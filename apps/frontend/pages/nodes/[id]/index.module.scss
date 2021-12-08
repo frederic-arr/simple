@@ -1,0 +1,85 @@
+@import '../../../src/styles/mixins';
+
+.poster {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  gap: 3rem;
+  margin: 0 1rem;
+  max-width: 1280px;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.left {
+  min-width: 200px;
+
+  // I don't know where to put the image on the mobile view so I hide it. I'm not a designer!
+  @include mobile() {
+    display: none;
+  }
+}
+
+.list {
+  margin-top: 1.5rem;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.synopsis {
+  max-width: 80ch;
+}
+
+.item {
+  flex-grow: 1;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.group {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+
+.edit {
+  align-self: center;
+  border-radius: 100vw;
+  background-color: transparent;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  height: 48px;
+  width: 48px;
+  cursor: pointer;
+
+  // Don't edit on mobile
+  @include mobile() {
+    display: none;
+  }
+}
+
+.link {
+  background-color: var(--bg-link);
+  border: 1px solid var(--border-link);
+  &:hover {
+    background-color: var(--bg-link-hover);
+  }
+  transition: background-color 200ms ease;
+  border-radius: 6px;
+  height: 48px;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "Attach to API",
+      "port": 9229,
+      "restart": true,
+      "request": "attach",
+      "address": "127.0.0.1",
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ],
+      "type": "pwa-node",
+      "protocol": "inspector",
+      "localRoot": "${workspaceRoot}/",
+      "remoteRoot": "/app/"
+    }
+  ]
+}

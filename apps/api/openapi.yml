@@ -1,0 +1,384 @@
+openapi: 3.0.3
+info:
+  title: StreamGuide API
+  description: A simple API
+  version: '1.0'
+  contact:
+    name: Arroyo Frédéric
+    email: frederic.arr@eduge.ch
+  license:
+    name: UNLICENSED
+servers:
+  - url: 'https://cfpt-2122-atapp-streamguide.farroyo.ch/api'
+    description: API
+tags:
+  - name: Infrastructure
+    description: Infrastructure sub-API
+  - name: Data
+    description: Data API
+  - name: Media
+    description: Media sub-API
+  - name: Admin
+    description: Admin
+paths:
+  /data/medias:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Data
+        - Media
+      responses:
+        '200':
+          $ref: '#/components/responses/MediaList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/Health'
+      operationId: findMany
+      description: |-
+        Returns a list of media matching the query
+
+        If `(page + 1) * limit` is greater than `500`, the request will return an empty array (regardless of the number of result)
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Query'
+    post:
+      summary: Create Media
+      operationId: createMedia
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          $ref: '#/components/responses/Health'
+      security:
+        - apiKey: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Media'
+        description: The media representation to be inserted
+      description: Creates a media
+      tags:
+        - Admin
+        - Data
+        - Media
+  '/data/medias/{id}':
+    parameters:
+      - $ref: '#/components/parameters/ObjectId'
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          $ref: '#/components/responses/Media'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/Health'
+      operationId: findOne
+      tags:
+        - Data
+        - Media
+      description: Finds a media with the given id
+    put:
+      summary: Replace Media
+      operationId: replaceMediaById
+      security:
+        - apiKey: []
+      description: Replaces a media with the given representation
+      tags:
+        - Admin
+        - Data
+        - Media
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Media'
+        description: The replacement media
+      responses:
+        '200':
+          $ref: '#/components/responses/OperationResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/Health'
+    delete:
+      summary: Delete Media
+      operationId: deleteMediaById
+      responses:
+        '200':
+          $ref: '#/components/responses/OperationResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/Health'
+      security:
+        - apiKey: []
+      description: Deletes a media
+      tags:
+        - Admin
+        - Data
+        - Media
+  /health:
+    get:
+      summary: Get Health
+      operationId: isHealthy
+      description: Checks if the service is healthy or not and returns the details
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+        '503':
+          $ref: '#/components/responses/Health'
+      tags:
+        - Infrastructure
+components:
+  schemas:
+    Media:
+      type: object
+      description: A full media view
+      example:
+        name: California Suite
+        synopsis: Misadventures of four groups of guests at the Beverly Hills Hotel.
+        image: 'https://m.media-amazon.com/images/M/MV5BYmNkMzA1NzgtMjhhMS00MGNiLThiNzktZDA0MTE5ZjZmMWUwXkEyXkFqcGdeQXVyMTAwMzUyOTc@._V1_SY1000_SX677_AL_.jpg'
+        links:
+          - 'https://www.disneyplus.com/_/618be08e0b0cc811b5077fed'
+      title: Media
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          maxLength: 300
+          description: Title of the media
+        synopsis:
+          type: string
+          minLength: 0
+          maxLength: 1000
+          description: Synopsis of the media
+        image:
+          type: string
+          format: uri
+          pattern: 'https:\/\/m\.media-amazon\.com\/images\/M\/[a-zA-Z0-9]+@@?[.\w+]+\.jpg'
+          description: Link to the portrait image
+        links:
+          type: array
+          uniqueItems: true
+          description: Links to external pages related to the media
+          items:
+            type: string
+      required:
+        - name
+        - synopsis
+        - image
+        - links
+    MediaListItem:
+      type: object
+      description: Minimalist media view
+      example:
+        name: California Suite
+        image: 'https://m.media-amazon.com/images/M/MV5BYmNkMzA1NzgtMjhhMS00MGNiLThiNzktZDA0MTE5ZjZmMWUwXkEyXkFqcGdeQXVyMTAwMzUyOTc@._V1_SY1000_SX677_AL_.jpg'
+        id: 618be08e0b0cc811b5077fed
+      title: Media List Item
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 300
+          description: Title of the media
+        image:
+          type: string
+          format: uri
+          pattern: 'https:\/\/m\.media-amazon\.com\/images\/M\/[a-zA-Z0-9]+@@?[.\w+]+\.jpg'
+          description: Link to the portrait image
+        id:
+          type: string
+          minLength: 24
+          maxLength: 24
+          pattern: '^[0-9a-f]{24}$'
+          description: Internal id of the media
+      required:
+        - name
+        - image
+        - id
+    MediaList:
+      type: object
+      title: Media List
+      description: List of minimalist media view
+      additionalProperties: false
+      properties:
+        medias:
+          type: array
+          minItems: 0
+          maxItems: 100
+          uniqueItems: true
+          description: List of medias
+          items:
+            $ref: '#/components/schemas/MediaListItem'
+      required:
+        - medias
+    Health:
+      type: object
+      title: Health
+      additionalProperties: false
+      description: Health view
+      properties:
+        isOk:
+          type: boolean
+          description: Are all the services OK
+        services:
+          type: object
+          required:
+            - isSearchOk
+            - isDatabaseOk
+          additionalProperties: false
+          description: Per-service details
+          properties:
+            isSearchOk:
+              type: boolean
+              description: Is the search service OK
+            isDatabaseOk:
+              type: boolean
+              description: Is the database OK
+      required:
+        - isOk
+        - services
+  securitySchemes:
+    apiKey:
+      name: X-Api-Key
+      type: apiKey
+      in: header
+      description: API key
+  examples: {}
+  parameters:
+    ObjectId:
+      name: id
+      in: path
+      schema:
+        type: string
+        pattern: '^[a-z0-9]{24}$'
+        minLength: 24
+        maxLength: 24
+      description: Object Id
+      required: true
+    Page:
+      name: p
+      in: query
+      required: false
+      schema:
+        type: number
+        minimum: 1
+        default: 1
+      description: The page
+    Limit:
+      name: 'n'
+      in: query
+      required: false
+      schema:
+        type: number
+        default: 20
+        minimum: 0
+        maximum: 100
+      description: How many item per page
+    Query:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+        default: '*'
+        maxLength: 300
+      description: The search query
+  responses:
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Pointer to the malformed paramter
+            required:
+              - message
+    Health:
+      description: Service Unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Health'
+    OperationResult:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              isSuccess:
+                type: boolean
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    MediaList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MediaList'
+    Media:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Media'
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string

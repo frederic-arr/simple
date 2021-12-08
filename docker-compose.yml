@@ -1,0 +1,104 @@
+version: "3.9"
+
+services:
+  api:
+    restart: always
+    env_file:
+      - ./apps/api/.env
+    environment:
+      ENVIRONMENT: production
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: production
+    depends_on:
+      typesense:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      connector:
+        condition: service_healthy
+    links:
+      - typesense
+      - mongodb
+    healthcheck:
+      test: curl -sf "http://127.0.0.1:80/health"
+      interval: 5s
+      timeout: 5s
+      start_period: 5s
+      retries: 5
+
+  frontend:
+    restart: always
+    environment:
+      API_URI: http://api:80
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        API_URI: http://api:80
+    ports:
+      - 80:3000
+    links:
+      - api
+    depends_on:
+      api:
+        condition: service_healthy
+
+  connector:
+    restart: always
+    env_file:
+      - ./apps/connector/.env
+    environment:
+      ENVIRONMENT: production
+    build:
+      context: ./apps/connector
+      dockerfile: Dockerfile
+      target: production
+    depends_on:
+      typesense:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    links:
+      - typesense
+      - mongodb
+    healthcheck:
+      test: curl -sf "http://127.0.0.1:80/health"
+      interval: 5s
+      timeout: 5s
+      start_period: 5s
+      retries: 5
+
+  typesense:
+    build:
+      context: ./apps/backend/typesense
+      dockerfile: Dockerfile
+    healthcheck:
+      test: curl -sf "http://127.0.0.1:8108/health"
+      interval: 5s
+      timeout: 5s
+      start_period: 5s
+      retries: 5
+    env_file:
+      - ./apps/backend/typesense/.env
+    environment:
+      TYPESENSE_DATA_DIR: /typesense/data
+    tmpfs:
+      - /typesense/data
+      - /typesense/logs
+
+  mongodb:
+    image: bitnami/mongodb:5.0
+    env_file:
+      - ./apps/backend/mongodb/primary.env
+    environment:
+      MONGODB_ADVERTISED_HOSTNAME: mongodb
+      MONGODB_REPLICA_SET_MODE: primary
+    healthcheck:
+      test:
+        - CMD
+        - mongo
+        - --eval
+        - db.adminCommand('ping')

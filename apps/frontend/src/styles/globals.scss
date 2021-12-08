@@ -1,0 +1,44 @@
+@import './mixins';
+
+:root {
+  --theme-dark-bg: #010409;
+  --theme-light-bg: #ffffff;
+
+  --bg-color: #010409;
+  --text-color: rgb(201, 209, 217);
+  --bg-hover: #0d1117;
+  --bg-link: #0d1117;
+  --bg-link-hover: rgb(48, 54, 61);
+  --border-link: rgb(48, 54, 61);
+}
+
+@include theme('light') {
+  --bg-color: #ffffff;
+  --text-color: #1e1e1e;
+  --bg-hover: rgb(212, 212, 212);
+  --bg-link: rgb(212, 212, 212);
+  --bg-link-hover: rgb(161, 161, 161);
+  --border-link: rgb(160, 160, 160);
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100vw;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
